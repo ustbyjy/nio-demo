@@ -95,4 +95,16 @@ public class TestBuffer {
             logger.info("remaining={}", byteBuffer.remaining());
         }
     }
+
+    /**
+     * 直接缓冲区
+     */
+    @Test
+    public void test3() {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        logger.info("isDirect={}", byteBuffer.isDirect());
+
+        byteBuffer = ByteBuffer.allocateDirect(1024);
+        logger.info("isDirect={}", byteBuffer.isDirect());
+    }
 }
