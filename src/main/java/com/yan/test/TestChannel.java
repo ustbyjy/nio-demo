@@ -7,11 +7,18 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Map;
 
 /**
  * 通道：用于源节点与目标节点的连接，负责数据的传输，与缓冲区配合。
@@ -127,4 +134,70 @@ public class TestChannel {
         logger.info("spent={}ms", (end - start));
     }
 
+    /**
+     * 分散和聚集
+     *
+     * @throws IOException
+     */
+    @Test
+    public void test4() throws IOException {
+        RandomAccessFile randomAccessFile1 = new RandomAccessFile("doc/1.txt", "rw");
+
+        FileChannel fileInputChannel = randomAccessFile1.getChannel();
+
+        ByteBuffer byteBuffer1 = ByteBuffer.allocate(100);
+        ByteBuffer byteBuffer2 = ByteBuffer.allocate(1024);
+
+        ByteBuffer[] byteBuffers = {byteBuffer1, byteBuffer2};
+        fileInputChannel.read(byteBuffers);
+
+        for (ByteBuffer byteBuffer : byteBuffers) {
+            byteBuffer.flip();
+        }
+
+        logger.info(new String(byteBuffers[0].array(), 0, byteBuffers[0].limit()));
+        logger.info(new String(byteBuffers[1].array(), 0, byteBuffers[1].limit()));
+
+        // ============================================================
+
+        RandomAccessFile randomAccessFile2 = new RandomAccessFile("doc/2.txt", "rw");
+
+        FileChannel fileOutputChannel = randomAccessFile2.getChannel();
+
+        fileOutputChannel.write(byteBuffers);
+
+        fileOutputChannel.close();
+        fileInputChannel.close();
+    }
+
+    /**
+     * 字符集编码与解码
+     */
+    @Test
+    public void test5() {
+        Map<String, Charset> charsetMap = Charset.availableCharsets();
+        for (Map.Entry<String, Charset> entry : charsetMap.entrySet()) {
+            logger.info("{}={}", entry.getKey(), entry.getValue());
+        }
+    }
+
+    /**
+     * 字符集
+     */
+    @Test
+    public void test6() throws CharacterCodingException {
+        Charset gbk = Charset.forName("GBK");
+
+        CharsetEncoder charsetEncoder = gbk.newEncoder();
+        CharsetDecoder charsetDecoder = gbk.newDecoder();
+
+        CharBuffer charBuffer1 = CharBuffer.allocate(1024);
+        charBuffer1.put("北京欢迎你！");
+        charBuffer1.flip();
+
+        ByteBuffer byteBuffer = charsetEncoder.encode(charBuffer1);
+
+        CharBuffer charBuffer2 = charsetDecoder.decode(byteBuffer);
+        logger.info(charBuffer2.toString());
+    }
 }
