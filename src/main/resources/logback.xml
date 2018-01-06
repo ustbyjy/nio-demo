@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <property name="LOG_HOME" value="/export/logs/nio-demo/" />
+    <property name="APP_NAME" value="nio-demo" />
+
+    <!-- appender是负责写日志的组件，ConsoleAppender把日志输出到控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${APP_NAME}: %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %p - %c %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- FileAppender：把日志添加到文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}${APP_NAME}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!-- 日志文件保留天数 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${APP_NAME}: %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %p - %c %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <level value="DEBUG" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
