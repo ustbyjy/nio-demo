@@ -106,4 +106,25 @@ public class TestChannel {
         long end = System.currentTimeMillis();
         logger.info("spent={}ms", (end - start));
     }
+
+    /**
+     * 通道之间传输数据（直接缓冲区）
+     */
+    @Test
+    public void test3() throws IOException {
+        long start = System.currentTimeMillis();
+
+        FileChannel fileInputChannel = FileChannel.open(Paths.get("doc", "1.png"), StandardOpenOption.READ);
+        FileChannel fileOutputChannel = FileChannel.open(Paths.get("doc", "3.png"), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.READ);
+
+//        fileInputChannel.transferTo(0, fileInputChannel.size(), fileOutputChannel);
+        fileOutputChannel.transferFrom(fileInputChannel, 0, fileInputChannel.size());
+
+        fileOutputChannel.close();
+        fileInputChannel.close();
+
+        long end = System.currentTimeMillis();
+        logger.info("spent={}ms", (end - start));
+    }
+
 }
