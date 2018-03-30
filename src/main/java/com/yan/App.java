@@ -8,5 +8,10 @@ public class App {
 
     public static void main(String[] args) {
         logger.info("Hello World!!!");
+        try {
+            throw new Exception("throw a exception");
+        } catch (Exception e) {
+            logger.error("报错了", e);
+        }
     }
 }

@@ -15,6 +15,7 @@
         <jdk.version>1.8</jdk.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
+        <logstash-logback-encoder.version>4.11</logstash-logback-encoder.version>
     </properties>
 
     <dependencies>
@@ -27,6 +28,16 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
         </dependency>
     </dependencies>
 
